@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,12 +16,11 @@ public class PlayerController : MonoBehaviour
         playerCollider = GetComponent<Collider2D>();
         controls = new Controls();
         rb = GetComponent<Rigidbody2D>();
-        controls.PlayerControls.MoveLeft.performed += ctx => move = -1;
-        controls.PlayerControls.MoveLeft.canceled += ctx => move = 0;
-        controls.PlayerControls.MoveRight.performed += ctx => move = 1;
-        controls.PlayerControls.MoveRight.canceled += ctx => move = 0;
-        controls.PlayerControls.Jump.performed += ctx => Jump();
 
+    }
+    public void Move(InputAction.CallbackContext context)
+    {
+        move = context.ReadValue<Vector2>().x;
     }
     private void OnEnable()
     {
@@ -48,10 +48,10 @@ public class PlayerController : MonoBehaviour
         }
         rb.velocity = new Vector2(move * movementSpeed, rb.velocity.y);
     }
-    void Jump()
+    public void Jump(InputAction.CallbackContext context)
     {
         print(jumpsRemaining);
-        if (jumpsRemaining != 0)
+        if (jumpsRemaining != 0 && context.performed)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.AddForce(Vector2.up * jumpStrength, ForceMode2D.Impulse);
