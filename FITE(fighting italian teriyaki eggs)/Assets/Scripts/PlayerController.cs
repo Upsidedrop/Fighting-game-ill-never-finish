@@ -11,16 +11,29 @@ public class PlayerController : MonoBehaviour
     int jumpsRemaining;
     Collider2D playerCollider;
     bool preparingJump;
+    Animator animator;
+    SpriteRenderer spriteRenderer;
     private void Awake()
     {
         playerCollider = GetComponent<Collider2D>();
         controls = new Controls();
         rb = GetComponent<Rigidbody2D>();
-
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
     public void Move(InputAction.CallbackContext context)
     {
         move = context.ReadValue<Vector2>().x;
+        animator.SetFloat("Speed", Mathf.Abs(move));
+        switch (move)
+        {
+            case>0:
+                spriteRenderer.flipX = true;
+                break;
+            case < 0:
+                spriteRenderer.flipX = false;
+                break;
+        }
     }
     private void OnEnable()
     {
@@ -46,6 +59,7 @@ public class PlayerController : MonoBehaviour
         {
             preparingJump = false;
         }
+        
         rb.velocity = new Vector2(move * movementSpeed, rb.velocity.y);
     }
     public void Jump(InputAction.CallbackContext context)
