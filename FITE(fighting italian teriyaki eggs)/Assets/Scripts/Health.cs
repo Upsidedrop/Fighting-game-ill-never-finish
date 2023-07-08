@@ -3,11 +3,22 @@ using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField]
     Slider healthSlider;
     public float health = 100;
+    public static int players;
     private void Awake()
     {
+        
+        players++;
+        if (players == 1)
+        {
+            healthSlider = GameObject.Find("SliderFill1").GetComponent<Slider>();
+        }
+        else
+        {
+            healthSlider = GameObject.Find("SliderFill2").GetComponent<Slider>();
+        }
+        
         healthSlider.maxValue = health;
         healthSlider.value = health;
     }
